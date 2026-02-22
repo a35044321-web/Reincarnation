@@ -75,12 +75,16 @@ public class ExpeditionFrame extends JFrame {
         // 中間資訊容器
         JPanel infoWrapper = new JPanel(new GridLayout(1, 2, 20, 0));
         infoWrapper.setOpaque(false);
-        
+
+        // 🚀 核心修正：將數字轉化為「練氣前期」等稱號
+        String realmName = util.RealmHelper.getRealmName(hero.getRealm());
+
         String infoText = "<html>" +
                 "<font color='#B8860B'>【道友】" + hero.getCharacters_name() + "</font> " +
                 "<font color='#D3D3D3'> | </font>" +
-                "<font color='#5F9EA0'>境界: " + hero.getRealm() + "</font>" +
+                "<font color='#5F9EA0'>境界: " + realmName + "</font>" + // 👈 使用變數
                 "</html>";
+
         JLabel lblInfo = new JLabel(infoText);
         lblInfo.setFont(new Font("Microsoft JhengHei", Font.BOLD, 22));
 
@@ -144,43 +148,53 @@ public class ExpeditionFrame extends JFrame {
     
     private void handleExpedition(JButton btn) {
         btn.setEnabled(false);
+        
+        // 1. 向天道(Service)請求歷練結果
         ExpeditionResult res = expeditionService.startExpedition(hero);
+        
         if (res != null && res.getEvent() != null) {
+            // 💡 若遇首領，戰場散發橘光
             Color glow = "首領".equals(res.getEvent().getEvent_type()) ? Color.ORANGE : null;
+            
+            // 2. 啟動水墨對撞動畫 (傳入頭像路徑與回調邏輯)
             combatCanvas.startAnim(
                 hero.getAvatar_path(),
                 res.getEvent().getEvent_image(),
                 glow, 
                 () -> {
+                    // 🚀 1. 顯示 Service 傳回的戰鬥文字（由 Service 決定勝負文字）
                     logArea.append(res.getMessage() + "\n");
+                    
+                    // 2. 更新體力條
                     staminaBar.setValue(hero.getStamina());
                     staminaBar.setString(hero.getStamina() + " / 100");
-                    int expGain = 0;
-                    model.Items droppedItem = null;
-                    if (res.isSuccess()) { 
-                        expGain = 100 + (int)(Math.random() * 50);
-                        java.util.List<model.Items> loots = itemService.generateExpeditionLoot(
-                            res.getEvent().getEvent_type(), hero.getRealm());
-                        if (loots != null && !loots.isEmpty()) {
-                            droppedItem = loots.get(0);
-                            itemService.addLootToPlayer(hero.getCharacters_id(), droppedItem.getItem_id(), 1);
-                        }
-                    } else {
-                        expGain = (100 + (int)(Math.random() * 50)) / 3;
-                    }
+
+                    // 🚀 3. 【核心修正】直接從 Service 傳回的 res 拿數據
+                    // 不要在這裡寫 Math.random()，也不要在此處生成掉落物！
+                    int expGain = res.getExpGain(); 
+                    
+                    // 從 Service 傳回的 List 中抓取第一件寶物
+                    model.Items droppedItem = (res.getLoot() != null && !res.getLoot().isEmpty()) 
+                                              ? res.getLoot().get(0) : null;
+
+                    // 🚀 4. 更新本地 hero 物件的修為（讓大廳同步）
                     hero.setExp(hero.getExp() + expGain);
-                    new Loot_UI(this, droppedItem, expGain).setVisible(true);
+
+                    // 🚀 5. 啟動結算視窗
+                    // 只要 res.isSuccess() 是 true，且 droppedItem 有值，Loot_UI 就會顯示大捷
+                    new Loot_UI(this, res.isSuccess(), droppedItem, expGain).setVisible(true);
+
                     btn.setEnabled(true);
                 }
             );
         } else {
-             String reason = (res != null) ? res.getMessage() : "系統連線異常";
+             // 💡 異常處理：如體力不足或資料庫斷線
+             String reason = (res != null) ? res.getMessage() : "天道連結異常";
              logArea.append("⚠️ 歷練中斷：" + reason + "\n");
              staminaBar.setValue(hero.getStamina());
              btn.setEnabled(true);
         }
     }
-
     private void initStaminaTimer() {
         new javax.swing.Timer(60000, e -> {
             hero = staminaService.recoverStamina(hero);
@@ -188,17 +202,6 @@ public class ExpeditionFrame extends JFrame {
             staminaBar.setString(hero.getStamina() + " / 100");
         }).start();
     }
-
-    public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            try {
-                dao.Characters.Characters_DAO charDao = new dao.Characters.Characters_DAO_impl();
-                model.Characters testHero = charDao.findByUserId(1);
-                if (testHero != null) {
-                    ExpeditionFrame frame = new ExpeditionFrame(testHero);
-                    frame.setVisible(true);
-                }
-            } catch (Exception e) { e.printStackTrace(); }
-        });
-    }
+   
+    
 }

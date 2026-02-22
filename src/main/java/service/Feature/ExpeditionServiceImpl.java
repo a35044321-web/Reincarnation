@@ -58,42 +58,52 @@ public class ExpeditionServiceImpl implements ExpeditionService{
 	
 	 @Override
 	 public ExpeditionResult startExpedition(Characters character) {
-	     // (1) 體力檢查 (消耗 15)
-	     if (character.getStamina() < 15) {
-	         return ExpeditionResult.failure("體力不足，請先打坐休息。");
-	     }
+    if (character.getStamina() < 15) {
+        return ExpeditionResult.failure("體力不足，請先打坐休息。");
+    }
 
-	     // (2) 抽取事件
-	     GameEvents event = eventDao.findRandomEventByRealm(character.getRealm());
-	     if (event == null) return ExpeditionResult.failure("此地靈氣稀薄，無事發生。");
+    GameEvents event = eventDao.findRandomEventByRealm(character.getRealm());
+    if (event == null) return ExpeditionResult.failure("此地靈氣稀薄，無事發生。");
 
-	     // (3) 戰鬥演算
-	     boolean isVictory = calculateCombat(character, event);
+    boolean isVictory = calculateCombat(character, event);
+    character.setStamina(character.getStamina() - 15);
+    
+    if (isVictory) {
+        // 🏆 勝利路徑
+        int gainExp = 100 + (int)(Math.random() * 50); // 💡 統一在這裡計算
+        character.setExp(character.getExp() + gainExp);
+        
+        List<Items> loots = itemService.generateExpeditionLoot(event.getEvent_type(), character.getRealm());
+        
+        // 🚀 關鍵：將 loot 塞進資料庫並封裝進 Result
+        if (loots != null && !loots.isEmpty()) {
+            itemService.addLootToPlayer(character.getCharacters_id(), loots.get(0).getItem_id(), 1);
+        }
 
-	     // (4) 扣除體力 (無論勝敗)
-	     character.setStamina(character.getStamina() - 15);
-	     
-	     if (isVictory) {
-	         // 🏆 勝利：獲得經驗 (由 Event 的 EffectValue 決定基礎)
-	         int gainExp = event.getEffect_value();
-	         character.setExp(character.getExp() + gainExp);
-	         
-	         // 🚀 調用 ItemService 產生掉落
-	         List<Items> loots = itemService.generateExpeditionLoot(event.getEvent_type(), character.getRealm());
-	         
-	         // 落地存檔
-	         charDao.update(character); 
-	         
-	         String victoryMsg = "【勝利】" + event.getEvents_name() + "\n   ➔ " + event.getDescription();
-	         ExpeditionResult result = ExpeditionResult.success(event, victoryMsg);
-	         result.setLoot(loots); 
-	         return result;
-	     } else {
-	         // 💀 戰敗：體力已扣，不給經驗或掉落 (依您需求可給 1/3 經驗)
-	         charDao.update(character);
-	         return ExpeditionResult.failure("【戰敗】你被 " + event.getEvents_name() + " 震懾，負傷而逃。", event);
-	     }
-	 }
+        charDao.update(character); 
+        
+        String victoryMsg = "【勝利】" + event.getEvents_name() + "\n   ➔ " + event.getDescription();
+        ExpeditionResult result = ExpeditionResult.success(event, "【勝利】" + event.getEvents_name());
+        
+        // 🚀 核心修正：將結果與掉落物綁定回傳
+        result.setSuccess(true); 
+        result.setExpGain(gainExp);
+        result.setLoot(loots); 
+        return result;
+    } else {
+        // 💀 戰敗路徑
+        int failExp = (100 + (int)(Math.random() * 50)) / 3;
+        character.setExp(character.getExp() + failExp);
+        
+        charDao.update(character);
+        
+        ExpeditionResult result = ExpeditionResult.failure("【戰敗】你被 " + event.getEvents_name() + " 震懾，負傷而逃。", event);
+        result.setSuccess(false);
+        result.setExpGain(failExp);
+        result.setLoot(null); // 戰敗無寶物
+        return result;
+    }
+}
 
 	@Override
 	public boolean isReadyToBreakthrough(Characters character) {

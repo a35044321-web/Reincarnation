@@ -9,7 +9,7 @@ public class ExpeditionResult {
     private GameEvents event;      // 觸發的事件物件 (內含圖片路徑)
     private int rewardExp;         // 獲得經驗
     private List<Items> loot;      // 掉落物品清單 (從 Player_items_DAO 獲取)
-
+    private int expGain;
     // 建構子與 Getter/Setter...
     public ExpeditionResult(boolean isSuccess, String message, GameEvents event) {
         this.isSuccess = isSuccess;
@@ -44,7 +44,8 @@ public class ExpeditionResult {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-
+	public int getExpGain() { return expGain; }
+    public void setExpGain(int expGain) { this.expGain = expGain; }
 	public GameEvents getEvent() {
 		return event;
 	}
