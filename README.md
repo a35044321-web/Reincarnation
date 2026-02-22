@@ -1,13 +1,24 @@
-markdown
 # 🌌 九霄尋道 (Nine Heavens Cultivation)
 > **基於 Java Swing 與 MySQL 構建的沉浸式修仙模擬 RPG**
 
-[![Java Version](https://img.shields.io)](https://www.oracle.com)
-[![Database](https://img.shields.io)](https://www.mysql.com)
-[![License](https://img.shields.io)](https://opensource.org)
+![Java Version](https://img.shields.io)
+![Database](https://img.shields.io)
+![License](https://img.shields.io)
 
 《九霄尋道》是一款融合了 **文字養成**、**即時戰鬥動畫**與**天道管理體系**的 Java 開發專案。透過物件導向設計與資料庫持久化技術，模擬修士從「凡人」歷練至「大能」的完整修仙因果。
 
+---
+
+## 🚀 快速開始 (Quick Start)
+
+### 1. 資料庫建置
+請在 MySQL 執行根目錄下的 [init_reincarnation.sql](./init_reincarnation.sql)，包含核心法陣：
+* `characters`: 修士核心屬性
+* `player_items`: 背包關聯表
+* `items`: 法寶百科全書
+
+### 2. 運行入口
+執行 `src/main/java/view/Start_UI.java` 即可開啟仙途。
 ---
 
 ## 💎 核心系統 (Core Systems)
