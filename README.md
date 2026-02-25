@@ -4,10 +4,7 @@
 
 《九霄尋道》是一款融合了 **文字養成**、**即時戰鬥動畫**與**天道管理體系**的 Java 開發專案。透過物件導向設計與資料庫持久化技術，模擬修士從「凡人」歷練至「大能」的完整修仙因果。
 
-<div align="center">
-  <video src="https://github.com/a35044321-web/Reincarnation/raw/main/專案畫面.mp4" width="100%" controls>
-  </video>
-</div>
+
 
 ## 🚀 快速開始 (Quick Start)
 
