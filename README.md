@@ -12,7 +12,7 @@
 <div align="center">
   <img src="images/login_ui.png" width="400px">
   <br>
-  <img src="images/create_man_role_ui.png" width="300px">
+  <img src="images/create_male_role_ui.png" width="300px">
   <img src="images/create_female_role_ui.png" width="300px">
   <p><i>由上至下：仙途入口、男女修士角色創建介面</i></p>
 </div>
