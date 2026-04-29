@@ -1,8 +1,7 @@
-
 # 🌌 九霄尋道 (Nine Heavens Cultivation)
-> **基於 Java Swing 與 MySQL 構建的沉浸式修仙模擬 RPG**
+> **基於 Java Swing 與 MySQL 構建，深度整合 AI 協作技術的沉浸式修仙模擬 RPG**
 
-《九霄尋道》是一款融合了 **文字養成**、**即時戰鬥動畫**與**天道管理體系**的 Java 開發專案。透過物件導向設計與資料庫持久化技術，模擬修士從「凡人」歷練至「大能」的完整修仙因果。
+《九霄尋道》是一款融合了 **文字養成**、**即時戰鬥動畫**與**天道管理體系**的 Java 開發專案。本專案除了深研物件導向架構（OOP），更全面引入 **AI 驅動開發（AI-Driven Development）**，從視覺美學到戰鬥音效，展現了現代工程師與 AI 協作的高效生產力。
 
 ---
 
@@ -45,7 +44,21 @@
 
 ---
 
-## 💎 核心系統 (Core Systems)
+## 💎 核心亮點：AI 創意協作 (AI Collaboration)
+
+本專案在開發過程中深度整合多項 AI 技術，實現了個人開發者難以企及的視聽規模：
+
+* **視覺資產生成**：
+    * 利用 **AI 繪圖技術** 生成高品質的場景背景、極具仙氣的角色立繪。
+    * 針對法寶與怪物模型，透過 AI 確保了整體美術風格的一致性。
+* **戰鬥音效設計**：
+    * 透過 **AI 音頻生成技術** 製作沉浸式的背景音樂（BGM）與精準的戰鬥打擊音效，強化了 Java Swing 視窗程式的遊戲感。
+* **開發協作**：
+    * 運用 AI 輔助優化複雜演算法與 SQL 語句，將開發重心精確投入於架構設計與系統穩定度。
+
+---
+
+## 🧬 核心系統 (Core Systems)
 
 ### 1. ⚡ 雷劫渡劫與突破
 * **視覺震撼**：突破時觸發全螢幕閃電特效與視窗抖動，模擬天道威壓。
@@ -64,22 +77,12 @@
 | **表現層 (View)** | Java Swing, AWT (Custom Graphics2D Rendering) |
 | **業務層 (Service)** | OOP Logic, Multithreading (Stamina Recovery) |
 | **持久層 (DAO)** | JDBC, MySQL 8.0, PreparedStatement |
-| **工具整合** | Maven, Apache POI (Excel Export) |
-
----
-
-## 🚀 快速開始 (Quick Start)
-
-### 1. 資料庫初始化
-請執行 `sql/init_reincarnation.sql` 建立核心表單：`characters` (修士)、`player_items` (背包)、`realm_config` (境界)。
-
-### 2. 運行專案
-執行 `src/main/java/view/Start_UI.java` 即可開啟仙途。
+| **AI 協作** | Midjourney / ChatGPT / AI Audio Generator |
 
 ---
 
 ## 👨‍💻 開發者心得
-本專案挑戰了 **Java Swing** 在遊戲開發中的極限，解決了 UI 刷新頻率同步（FPS）、數據異步持久化以及跨視窗物件傳遞等技術難點。展現了 Java 在構建複雜邏輯系統時的嚴謹性。
+在《九霄尋道》的開發過程中，我致力於挑戰 **Java Swing** 在遊戲開發上的界限。最令我感到興奮的，是成功將「嚴謹的後端邏輯」與「靈活的 AI 生成資產」相結合。透過 AI 協作，我能夠以一人之力完成包含視覺、聽覺與複雜數據庫設計的完整 RPG 系統，這體現了現代開發者整合多元技術資源、解決跨領域問題的核心競爭力。
 
 ---
 
